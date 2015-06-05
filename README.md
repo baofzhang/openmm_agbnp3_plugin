@@ -42,7 +42,7 @@ The last two steps may need superuser access depending on the installation targe
 
 ```
 cd example
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<openmm_dir>/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<openmm_dir>/lib:<openmm_dir>lib/plugins
 python test_agbnp3.py
 ```
 
