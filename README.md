@@ -40,6 +40,8 @@ The last two steps may need superuser access depending on the installation targe
 
 ## Test
 
+`cd` to the directory where you cloned the `openmm_agbnp3_plugin` sources. Then:
+
 ```
 cd example
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<openmm_dir>/lib:<openmm_dir>lib/plugins
