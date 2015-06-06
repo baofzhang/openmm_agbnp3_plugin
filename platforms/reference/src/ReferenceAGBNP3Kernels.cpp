@@ -97,14 +97,6 @@ void ReferenceCalcAGBNP3ForceKernel::initialize(const System& system, const AGBN
     decav = (double (*)[3])malloc(numParticles*sizeof(double [3]));
     dehb = (double (*)[3])malloc(numParticles*sizeof(double [3]));
 
-#ifdef NOTNOW
-    for (int i = 0; i < numParticles; i++){
-      std::cout << i << " ";
-      // << radius[i] << " " << charge[i] << " " << gamma[i] << " " << alpha[i] << std::endl;
-      for (int j = 0 ; j <
-    }
-#endif
-
     //create AGBNP3 instance
     agbnp3_initialize();
     int verbose = 0;
@@ -120,6 +112,10 @@ void ReferenceCalcAGBNP3ForceKernel::initialize(const System& system, const AGBN
     nblist_delete_neighbor_list(conntbl);
 }
 
+static int niter = 0;
+static double eold = 0.0;
+static double *xold = 0, *yold = 0, *zold = 0;   
+
 double ReferenceCalcAGBNP3ForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
     vector<RealVec>& pos = extractPositions(context);
     vector<RealVec>& force = extractForces(context);
@@ -127,6 +123,11 @@ double ReferenceCalcAGBNP3ForceKernel::execute(ContextImpl& context, bool includ
     double energy = 0.0;
     double egb, evdw, ecorr_vdw, ecav, ecorr_cav, ehb; 
     int init = 0;
+    double wgb = 1.0; //weights
+    double wcav = 1.0;
+    double wvdw = 1.0;
+    double whb = 1.0;
+      
 
     // Compute the interactions.
     double nm2ang = 10.0;
@@ -141,8 +142,9 @@ double ReferenceCalcAGBNP3ForceKernel::execute(ContextImpl& context, bool includ
 		&evdw, &ecorr_vdw, dvwdr,
 		&ecav, &ecorr_cav, decav,
 		&ehb, dehb);
-    energy = egb + evdw + ecorr_vdw + ecav + ecorr_cav + ehb;
+    energy = wgb*egb + wvdw*(evdw + ecorr_vdw) + wcav*(ecav + ecorr_cav) + whb*ehb;
 
+#ifdef NOTNOW
     for(int i=0;i<numParticles;i++)
       std::cout << "Br" << i << "=" << br[i] << std::endl;
 
@@ -151,24 +153,17 @@ double ReferenceCalcAGBNP3ForceKernel::execute(ContextImpl& context, bool includ
     std::cout << "Ecav=" << ecav + ecorr_cav << std::endl;
     std::cout << "Ehb =" << ehb << std::endl;
     std::cout << "Eagbnp =" << energy << std::endl;
-    
+#endif    
 
-#ifdef NOTNOW
-    {
-        int p1 = particle1[i];
-        int p2 = particle2[i];
-        RealVec delta = pos[p1]-pos[p2];
-        RealOpenMM r2 = delta.dot(delta);
-        RealOpenMM r = sqrt(r2);
-        RealOpenMM dr = (r-length[i]);
-        RealOpenMM dr2 = dr*dr;
-        energy += k[i]*dr2*dr2;
-        RealOpenMM dEdR = 4*k[i]*dr2*dr;
-        dEdR = (r > 0) ? (dEdR/r) : 0;
-        force[p1] -= delta*dEdR;
-        force[p2] += delta*dEdR;
+    //returns the gradients
+    double kcalang2kjmolnm = 4.184/0.1;
+    for(int i = 0; i < numParticles; i++){
+      force[i][0] -= kcalang2kjmolnm*(wgb*dgbdr[i][0]+wvdw*dvwdr[i][0]+wcav*decav[i][0]+whb*dehb[i][0]);
+      force[i][1] -= kcalang2kjmolnm*(wgb*dgbdr[i][1]+wvdw*dvwdr[i][1]+wcav*decav[i][1]+whb*dehb[i][1]);
+      force[i][2] -= kcalang2kjmolnm*(wgb*dgbdr[i][2]+wvdw*dvwdr[i][2]+wcav*decav[i][2]+whb*dehb[i][2]);
     }
-#endif
+
+    //returns energy
     double kcalmol2kjmol = 4.184;
     return kcalmol2kjmol*energy;
 }
