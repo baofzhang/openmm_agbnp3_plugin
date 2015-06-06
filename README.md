@@ -14,9 +14,9 @@ Locate the OpenMM installation directory, otherwise it will default to `/usr/loc
 Download the package from github:
 
 ```
-git clone https://github.com/egallicc/openmm_agbnp3_plugin.git
+git clone --recursive https://github.com/egallicc/openmm_agbnp3_plugin.git
 ```
-
+The `--recursive` option automatically downloads the AGBNP3 submodule.
 
 Build and install the plugin with cmake. Assuming a unix system:
 
@@ -40,9 +40,11 @@ The last two steps may need superuser access depending on the installation targe
 
 ## Test
 
+`cd` to the directory where you cloned the `openmm_agbnp3_plugin` sources. Then:
+
 ```
 cd example
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<openmm_dir>/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<openmm_dir>/lib:<openmm_dir>lib/plugins
 python test_agbnp3.py
 ```
 
