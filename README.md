@@ -2,10 +2,20 @@
 
 A plugin to add the AGBNP3 Force to OpenMM
 
+Emilio Gallicchio <egallicchio@brooklyn.cuny.edu>
+Last Modified: June 2015
+
+
+
 ## License
 
 This software is released under the LGPL license. See LICENSE.
 
+## Credits
+
+This software is written and maintained by Emilio Gallicchio <egallicchio@brooklyn.cuny.edu> with support from a grant from the National Science Foundation (ACI 1440665).
+
+The plugin interface is based on the [openmmexampleplugin](https://github.com/peastman/openmmexampleplugin) by Peter Eastman.
 
 ## Installation
 
