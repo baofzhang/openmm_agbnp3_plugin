@@ -1,0 +1,9 @@
+/* -------------------------------------------------------------------------- *
+ *                                   OpenMM-AGBNP3                            *
+ * -------------------------------------------------------------------------- */
+
+#include "OpenCLAGBNP3KernelSources.h"
+
+using namespace AGBNP3Plugin;
+using namespace std;
+

@@ -1,0 +1,25 @@
+#ifndef OPENMM_OPENCLAGBNP3KERNELSOURCES_H_
+#define OPENMM_OPENCLAGBNP3KERNELSOURCES_H_
+
+/* -------------------------------------------------------------------------- *
+ *                                   OpenMM-AGBNP3                            *
+ * -------------------------------------------------------------------------- */
+
+#include <string>
+
+namespace AGBNP3Plugin {
+
+/**
+ * This class is a central holding place for the source code of OpenCL kernels.
+ * The CMake build script inserts declarations into it based on the .cl files in the
+ * kernels subfolder.
+ */
+
+class OpenCLAGBNP3KernelSources {
+public:
+@CL_FILE_DECLARATIONS@
+};
+
+} // namespace AGBNP3Plugin
+
+#endif /*OPENMM_OPENCLAGBNP3KERNELSOURCES_H_*/
